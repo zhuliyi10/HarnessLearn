@@ -3,6 +3,8 @@
 > 参考 learn-claude-code 的思想，用 17 个递进式章节从零构建一个完整的 Agent Harness。
 > **Agency 来自模型，Agent 产品 = 模型 + Harness。模型是驾驶者，Harness 是载具。本项目教你造载具。**
 
+📖 **在线文档**：[https://zhuliyi10.github.io/HarnessLearn/](https://zhuliyi10.github.io/HarnessLearn/)
+
 ## 什么是 Harness
 
 模型（LLM）通过训练获得了感知、推理、行动的能力，这不需要任何外部代码。但一个能干活的 Agent 产品，需要模型和 Harness 缺一不可：
