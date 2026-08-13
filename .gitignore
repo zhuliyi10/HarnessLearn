@@ -12,10 +12,10 @@ node_modules/
 .vitepress/cache/
 .vitepress/dist/
 
-# Harness 运行产物
-tasks/
-memory/
-workflows/
+# Harness 运行产物（锚定根目录，避免误伤 .github/workflows）
+/tasks/
+/memory/
+/workflows/
 journal.jsonl
 *.worktree
 
