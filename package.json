@@ -1,0 +1,26 @@
+{
+  "name": "harnesslearn",
+  "version": "1.0.0",
+  "description": "> 参考 learn-claude-code 的思想，用 17 个递进式章节从零构建一个完整的 Agent Harness。 > **Agency 来自模型，Agent 产品 = 模型 + Harness。模型是驾驶者，Harness 是载具。本项目教你造载具。**",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhuliyi10/HarnessLearn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zhuliyi10/HarnessLearn/issues"
+  },
+  "homepage": "https://github.com/zhuliyi10/HarnessLearn#readme",
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

@@ -7,6 +7,11 @@ venv/
 # 环境与密钥
 .env
 
+# Node / VitePress
+node_modules/
+.vitepress/cache/
+.vitepress/dist/
+
 # Harness 运行产物
 tasks/
 memory/
