@@ -45,13 +45,25 @@ Anthropic SDK 返回的 `response.content` 是对象列表，而压缩函数需�
 
 ## 试一试
 
+> **安全提示**：代码会执行模型生成的 shell 命令。建议在一个临时测试目录中运行。
+
 代码里故意把 `TOKEN_BUDGET` 调小（20000，约合 6 万字符），方便观察：
 
 ```sh
 python s08_context_compact/code.py
 ```
 
-连续让它读几个大文件，几轮后你会看到紫色的 `[compact] 级别1 snip 完成 -> xxx tokens` 日志。把预算再调小可触发摘要压缩。
+试试这些 prompt（连续输入，同一个会话）：
+
+1. `读一下 s15_integrated_harness/code.py 的完整内容`
+2. `再读一下 s09_memory/code.py 和 s10_task_system/code.py`
+3. `刚才读的第一个文件是干什么的？一句话总结`
+
+**观察重点**：紫色的 `[compact]` 日志——上下文超过预算时，harness 在模型看不见的地方悄悄腾地方。
+
+- Prompt 1、2：连续读几个大文件，几轮后你会看到 `[compact] 级别1 snip 完成 -> xxx tokens`——早期的大工具输出被截断。把 `TOKEN_BUDGET` 再调小，还能触发级别 2（micro）和级别 3（LLM 摘要）。
+- Prompt 3：压缩后模型还记得什么？摘要要保住"事实、决定、进度"，丢掉过程细节——这条 prompt 就是用来检验摘要质量的。
+- 思考：压缩发生在哪一层？模型感知不到历史被改写过，这正是它必须"重要结论及时确认"的原因（见 SYSTEM）。
 
 ## 动手练习
 

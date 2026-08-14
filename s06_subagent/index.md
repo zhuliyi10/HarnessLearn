@@ -60,15 +60,23 @@ subagent 是无人值守的，必须防止它无限循环。`run_subagent` 有 `
 
 ## 试一试
 
+> **安全提示**：代码会执行模型生成的 shell 命令。建议在一个临时测试目录中运行。
+
 ```sh
 python s06_subagent/code.py
 ```
 
-```
-s06 >> 先派 subagent 调研当前目录里所有 .py 文件各是干什么的，然后你根据调研结果写一个 OVERVIEW.md
-```
+试试这些 prompt：
 
-观察紫色的 `>> 派出 subagent` 和 `sub:` 前缀——那是隔离上下文里的活动；主对话只会收到结论。
+1. `先派 subagent 调研当前目录里所有 .py 文件各是干什么的，然后你根据调研结果写一个 OVERVIEW.md`
+2. `现在几点了？`
+3. `让 subagent 统计每个章节目录的总行数并给出结论，你自己不要读文件`
+
+**观察重点**：紫色的 `>> 派出 subagent` 和 `sub:` 前缀——过程留在隔离的上下文里，只有结论回到主对话。
+
+- Prompt 1：调研类任务会产生大量中间输出（ls、grep、读文件……），全都留在 subagent 自己的 messages[] 里；主 agent 只收到一条精炼结论，再基于它写文件。
+- Prompt 2：简单的一步任务。SYSTEM 里写明"简单的单步操作自己做，不要什么都委派"——观察模型是否跳过 `task` 直接回答。
+- Prompt 3：注意主 agent 给 subagent 的任务描述——subagent 看不到主对话历史，description 必须自包含。描述写得含糊，subagent 就会跑偏。
 
 ## 动手练习
 

@@ -69,17 +69,23 @@ MCP_SERVERS = {
 
 ## 试一试
 
+> **安全提示**：代码会执行模型生成的 shell 命令。建议在一个临时测试目录中运行。
+
 ```sh
 python s14_mcp_plugin/code.py
 ```
 
-启动时会打印 `[mcp] 已连接 demo-weather，发现 2 个工具`。然后：
+启动时会打印 `[mcp] 已连接 demo-weather，发现 2 个工具`。试试这些 prompt：
 
-```
-s14 >> 北京今天天气怎么样？
-```
+1. `北京今天天气怎么样？`
+2. `对比一下北京和上海的天气，把结果写进 weather.md`
+3. `调用一个叫 weather_plus 的工具查天气`
 
-观察模型调用 `mcp__weather__get_weather`——数据来自外部进程。
+**观察重点**：模型调用的是 `mcp__weather__get_weather`——数据来自外部进程，工具是启动时动态发现的。
+
+- Prompt 1：本地没有任何天气数据，模型通过 MCP 工具拿到结果——注意工具名的命名空间前缀，MCP 工具和内置工具在同一个 dispatch 里被分发。
+- Prompt 2：外部工具（查天气）+ 内置工具（write_file）混着用。对模型来说它们没有区别——都是 schema 里的一个选项。
+- Prompt 3：工具不存在。观察模型收到错误后如何处理——和 s02 的"未知工具名"是同一个机制。MCP server 挂了或改名，也只是 dispatch map 里少几个条目。
 
 ## 动手练习
 

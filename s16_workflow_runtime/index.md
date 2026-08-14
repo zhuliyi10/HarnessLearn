@@ -60,17 +60,19 @@ if step_name in progress:
 
 ## 试一试
 
-```sh
-python s16_workflow_runtime/code.py run "创建一个 slugify 函数库并测试"
-```
+> **安全提示**：代码会执行模型生成的 shell 命令。建议在一个临时测试目录中运行。
 
-观察四个阶段依次推进。跑到一半 Ctrl+C 中断，然后：
+试试这些命令：
 
-```sh
-python s16_workflow_runtime/code.py resume
-```
+1. `python s16_workflow_runtime/code.py run "创建一个 slugify 函数库并测试"`
+2. （跑到一半 Ctrl+C 中断，然后）`python s16_workflow_runtime/code.py resume`
+3. `python s16_workflow_runtime/code.py run "写一个 README 介绍本项目"`（换个任务再跑一次）
 
-已完成的步骤会被跳过，从中断处继续。
+**观察重点**：四个阶段依次推进，每一步是独立的 agent loop——流程由 harness 固定，步骤内部交给模型。
+
+- 命令 1：观察四个阶段依次推进。流程是写死的，模型只负责把每一步做对——这就是 workflow 和 agent loop 的分工。
+- 命令 2：已完成的步骤会被跳过，从中断处继续——每步的产出落盘了，进度不依赖内存里的 messages。
+- 命令 3：换一个目标跑同一条流程——workflow 的价值在于可复用。同一条流水线，换目标就能再跑一遍。
 
 ## workflow vs agent loop：怎么选？
 

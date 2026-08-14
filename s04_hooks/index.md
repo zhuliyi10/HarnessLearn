@@ -69,11 +69,23 @@ def hook_deny_dangerous(tool_name, tool_input):
 
 ## 试一试
 
+> **安全提示**：代码会执行模型生成的 shell 命令。建议在一个临时测试目录中运行。
+
 ```sh
 python s04_hooks/code.py
 ```
 
-跑一个任务后 `cat hook_audit.jsonl`，能看到完整的调用审计记录。再试试让它执行含 `sudo` 的命令，观察被前置 hook 拦截。
+试试这些 prompt：
+
+1. `列出当前目录的文件，然后读一下 package.json`
+2. `读一下不存在的 nope.txt`
+3. `刚才这些操作都被记录了吗？看看审计日志`
+
+**观察重点**：主循环一行没加，所有横切逻辑都挂在 `PreToolUse` / `PostToolUse` 两个插口上。
+
+- Prompt 1：每次调用后都有灰色的 `⏱ 耗时` 日志；`hook_limit_output_tools` 正在悄悄给 bash 命令追加 `| head -c 50000`——hook 可以改写参数。跑完后 `cat hook_audit.jsonl`，能看到完整的审计记录。
+- Prompt 2：失败输出开头会多出 `[工具执行失败]` 标记——这是 `hook_flag_errors` 后置改写的结果，帮模型更快识别失败。
+- Prompt 3：模型自己去 `cat hook_audit.jsonl`——审计日志本身就是普通文件，harness 的行为事后完全可追溯。
 
 ## 动手练习
 

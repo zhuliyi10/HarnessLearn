@@ -65,15 +65,23 @@ if handler is None:
 
 ## 试一试
 
+> **安全提示**：代码会执行模型生成的 shell 命令。建议在一个临时测试目录中运行，避免影响你的项目文件。s03 会加入权限控制。
+
 ```sh
 python s02_tool_use/code.py
 ```
 
-```
-s02 >> 新建 utils.py 写一个计算斐波那契的函数，然后读回来检查一遍
-```
+试试这些 prompt：
 
-观察输出里 `[bash]` `[write_file]` `[read_file]` 的前缀——模型在不同的工具间自主切换。
+1. `新建 utils.py 写一个计算斐波那契的函数，然后读回来检查一遍`
+2. `找出所有 s 开头的章节目录，并告诉我 s08 是讲什么的`
+3. `读一下不存在的 nope.txt 文件`
+
+**观察重点**：输出里 `[bash]` `[read_file]` `[write_file]` `[list_files]` 的前缀——模型在不同的工具间自主切换，而主循环一行没动。
+
+- Prompt 1：模型会先 `write_file` 再 `read_file` 读回验证——工具描述里"写之前先 read_file"的说明正在起作用。
+- Prompt 2：观察模型选 `list_files` 还是 `bash` 的 `ls`。两者都能完成任务，但 schema 里的 description 会影响它的选择——这就是"工具描述是给模型看的说明书"。
+- Prompt 3：文件不存在，`read_file` 返回 `错误: ...` 而不是抛异常。注意模型不会瞎编内容，而是如实汇报或尝试别的路径——错误也是 tool_result。
 
 ## 动手练习
 

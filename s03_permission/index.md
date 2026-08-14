@@ -60,21 +60,23 @@ return "权限拒绝: 该操作被安全策略禁止，请换用其他方式。"
 
 ## 试一试
 
+> **安全提示**：代码会执行模型生成的 shell 命令。建议在一个临时测试目录中运行。
+
 ```sh
 python s03_permission/code.py
 ```
 
-```
-s03 >> 创建一个 temp 目录，然后删掉它
-```
+试试这些 prompt：
 
-模型会先 `mkdir`（放行），再 `rm`（触发 ask，等你输入 y/n/a）。再试试：
+1. `创建一个 temp 目录，然后删掉它`
+2. `执行 sudo ls 看看有什么`
+3. `把 .env 文件里的 MODEL_ID 改成 gpt-5`
 
-```
-s03 >> 执行 sudo ls
-```
+**观察重点**：每次工具调用前都先过一遍 `PermissionGate`——allow / ask / deny 三态，规则按顺序匹配。
 
-会直接被 deny，模型会告诉你它做不了。
+- Prompt 1：模型会先 `mkdir`（命中 allow 规则直接放行），再 `rm`（触发 ask，弹出紫色的 `⚠ 需要确认`）。试试输入 `a`——本次会话里相同调用不再重复询问（`session_grants`）。
+- Prompt 2：`sudo` 命中 deny 规则，不弹询问框、直接拒绝。注意模型不会硬来，而是告诉你它做不了——被拒绝的操作以 tool_result 回传，模型读到后自己改道。
+- Prompt 3：`write_file` 碰到 `.env` 也要确认——权限系统管的不只是 bash，任何工具都能挂规则。
 
 ## 动手练习
 
